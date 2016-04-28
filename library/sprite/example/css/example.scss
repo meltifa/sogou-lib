@@ -1,0 +1,41 @@
+@import 'sprite';
+
+%-sprite {
+	$url: sprite-info('escaped_image');
+	$width: sprite-info('total_width');
+	$height: sprite-info('total_height');
+	background: {
+		image: url($url);
+		size: #{$width}px #{$height}px;
+		repeat: no-repeat;
+	}
+}
+
+
+@each $name, $sprite in sprite-group('group1') {
+	$width: sprite-prop($sprite, 'width');
+	$height: sprite-prop($sprite, 'height');
+	$offset-x: sprite-prop($sprite, 'offset_x');
+	$offset-y: sprite-prop($sprite, 'offset_y');
+
+	// create a rule
+	.#{$name} {
+		// extend parent rule
+		@extend %-sprite;
+		// set some private attributes
+		width: #{$width}px;
+		height: #{$height}px;
+		background-position: #{$offset-x}px #{$offset-y}px;
+	}
+}
+
+.close {
+	@extend %-sprite;
+	$width: sprite-prop('group2-close', 'width');
+	$height: sprite-prop('group2-close', 'height');
+	$offset-x: sprite-prop('group2-close', 'offset_x');
+	$offset-y: sprite-prop('group2-close', 'offset_y');
+	width: #{$width}px;
+	height: #{$height}px;
+	background-position: #{$offset-x}px #{$offset-y}px;
+}

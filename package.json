@@ -1,0 +1,16 @@
+{
+  "name": "library",
+  "version": "0.1.0",
+  "description": "libraries for development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git://github.com/HaoyCn/library"
+  },
+  "keywords": [],
+  "author": "HaoyCn",
+  "license": "MIT"
+}
