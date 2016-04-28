@@ -11,19 +11,25 @@ var parseSprites = function(sprites, prefix) {
 	var RETINA = prefix ? ('-' + prefix) : '';
 		
 	var css = sprites.map(function(sprite) {
-		var name = sprite.name.replace('@', '-');
-		var exec = /^(\w+)\-/.exec(name);
+		var iname;
+		var vname = iname = sprite.name;
+		var at = vname.indexOf('@');
+		if(at > 0) {
+			vname = vname.replace('@', '-');
+			iname = iname.substring(0, at);
+		}
+		var exec = /^(\w+)\-/.exec(vname);
 		var namespace = exec ? exec[1] : 'default';
 			
 		if(!nsLogger.hasOwnProperty(namespace)) {
 			nsLogger[namespace] = [];
 				
 		}
-		nsLogger[namespace].push(name);
+		nsLogger[namespace].push([vname, iname]);
 
 		return (`
-			${PRENAME}-${name}: (
-				'name': '${name}',
+			${PRENAME}-${vname}: (
+				'name': '${iname}',
 				'namespace': '${namespace}',
 				'width': ${sprite.width},
 				'height': ${sprite.height},
@@ -39,7 +45,7 @@ var parseSprites = function(sprites, prefix) {
 	var namespace = Object.keys(nsLogger)
 		.map(function(name) {
 			var subs = this[name].map(function(spr) {
-				return `'${spr}': ${PRENAME}-${spr}`;
+				return `'${spr[1]}': ${PRENAME}-${spr[0]}`;
 			}).join();
 			return `'${name}': (${subs})`;
 		}, nsLogger)
