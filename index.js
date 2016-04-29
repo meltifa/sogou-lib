@@ -7,7 +7,7 @@ var repSlash = function(str) {
 	return str.replace(/\\/g, '/');
 };
 
-var readdirDeep = function(path, absolute) {
+var readdirDeep = function(path) {
 	return FS.readdirSync(path).reduce(function(container, file) {
 		var pathname = path + '/' + file;
 		var lstat = FS.lstatSync(pathname);
@@ -63,6 +63,9 @@ Library.prototype = {
 			var filename = file.replace(base, '');
 			return re.test(filename);
 		});
+	},
+	cwd: function() {
+		return this.base;
 	}
 };
 

@@ -1,7 +1,7 @@
 {
   "name": "library",
-  "version": "0.1.0",
-  "description": "libraries for development",
+  "version": "0.2.0",
+  "description": "store and require tiny modules",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git@git://github.com/HaoyCn/library"
   },
-  "keywords": [],
+  "keywords": ["library"],
   "author": "HaoyCn",
   "license": "MIT"
 }
