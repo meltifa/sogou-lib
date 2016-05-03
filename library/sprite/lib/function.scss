@@ -1,0 +1,25 @@
+@function sprite-prop($name, $property, $retina: false) {
+	$type: type-of($name);
+	@if ('map' == $type) {
+		@return map-get($name, $property);
+	}
+	@if ('string' == $type) {
+		$prefix: str-index($name, '-');
+		$prefix: str-slice($name, 0, $prefix - 1);
+		$namespace: if($retina, $__sprite-namespace-2x, $__sprite-namespace);
+		$group: map-get($namespace, $prefix);
+		$sprite: map-get($group, $name);
+		@return map-get($sprite, $property);
+	}
+	@return '';
+}
+
+@function sprite-info($prop, $retina: false) {
+	$spritesheet: if($retina, $__sprite-spritesheet-2x, $__sprite-spritesheet);
+	@return map-get($spritesheet, $prop);
+}
+
+@function sprite-group($name, $retina: false) {
+	$namespace: if($retina, $__sprite-namespace-2x, $__sprite-namespace);
+	@return map-get($namespace, $name);
+}
