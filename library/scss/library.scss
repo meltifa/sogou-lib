@@ -1,3 +1,22 @@
+%-text-justify {
+	text: {
+		align: justify;
+		align-last: justify;
+	}
+
+	&:after {
+		content: '';
+		display: inline-block;
+		width: 100%;
+		height: 0;
+		visibility: hidden;
+	}
+}
+
+@mixin text-justify {
+	@extend %-text-justify;
+}
+
 %-inline-block {
 	display: inline-block;
 	*display: inline;
@@ -34,7 +53,7 @@
 }
 
 %-absolute-center {
-	display: absolute;
+	position: absolute;
 	top: 50%;
 	left: 50%;
 }
