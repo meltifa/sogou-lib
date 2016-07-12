@@ -1,11 +1,15 @@
-$__sprite-group1-smile: ( 'name': 'group1-smile', 'namespace': 'group1', 'width': 28, 'height': 28, 'escaped_image': '../img/sprite.png', 'offset_x': -41, 'offset_y': 0, 'total_width': 69, 'total_height': 33 );
-$__sprite-group2-close: ( 'name': 'group2-close', 'namespace': 'group2', 'width': 33, 'height': 33, 'escaped_image': '../img/sprite.png', 'offset_x': 0, 'offset_y': 0, 'total_width': 69, 'total_height': 33 );
-$__sprite-namespace: ('group1': ('group1-smile': $__sprite-group1-smile),'group2': ('group2-close': $__sprite-group2-close));
-$__sprite-spritesheet: ( 'escaped_image': '../img/sprite.png', 'total_width': 69, 'total_height': 33 );
-$__sprite-group1-smile-2x: ( 'name': 'group1-smile', 'namespace': 'group1', 'width': 56, 'height': 56, 'escaped_image': '../img/sprite@2x.png', 'offset_x': -82, 'offset_y': 0, 'total_width': 138, 'total_height': 66 );
-$__sprite-group2-close-2x: ( 'name': 'group2-close', 'namespace': 'group2', 'width': 66, 'height': 66, 'escaped_image': '../img/sprite@2x.png', 'offset_x': 0, 'offset_y': 0, 'total_width': 138, 'total_height': 66 );
-$__sprite-namespace-2x: ('group1': ('group1-smile': $__sprite-group1-smile-2x),'group2': ('group2-close': $__sprite-group2-close-2x));
-$__sprite-spritesheet-2x: ( 'escaped_image': '../img/sprite@2x.png', 'total_width': 138, 'total_height': 66 );
+$__sprite-close: ("name":"close","width":33,"height":33,"escaped_image":"../img/sprite.png","offset_x":0,"offset_y":0,"total_width":69,"total_height":33);
+$__sprite-icon-smile: ("name":"icon-smile","width":28,"height":28,"escaped_image":"../img/sprite.png","offset_x":-41,"offset_y":0,"total_width":69,"total_height":33);
+$__sprite-default: ("close": $__sprite-close);
+$__sprite-icon: ("icon-smile": $__sprite-icon-smile);
+$__sprite-namespace: ("default": $__sprite-default, "icon": $__sprite-icon);
+$__sprite-spritesheet: ("width":69,"height":33,"total_width":69,"total_height":33,"escaped_image":"../img/sprite.png");
+$__sprite-close-2x: ("name":"close","width":66,"height":66,"escaped_image":"../img/sprite@2x.png","offset_x":0,"offset_y":0,"total_width":138,"total_height":66);
+$__sprite-icon-smile-2x: ("name":"icon-smile","width":56,"height":56,"escaped_image":"../img/sprite@2x.png","offset_x":-82,"offset_y":0,"total_width":138,"total_height":66);
+$__sprite-default-2x: ("close": $__sprite-close-2x);
+$__sprite-icon-2x: ("icon-smile": $__sprite-icon-smile-2x);
+$__sprite-namespace-2x: ("default": $__sprite-default-2x, "icon": $__sprite-icon-2x);
+$__sprite-spritesheet-2x: ("width":138,"height":66,"total_width":138,"total_height":66,"escaped_image":"../img/sprite@2x.png");
 
 
 
@@ -16,11 +20,15 @@ $__sprite-spritesheet-2x: ( 'escaped_image': '../img/sprite@2x.png', 'total_widt
 	}
 	@if ('string' == $type) {
 		$prefix: str-index($name, '-');
-		$prefix: str-slice($name, 0, $prefix - 1);
+		$prefix: if($prefix, str-slice($name, 0, $prefix - 1), 'default');
 		$namespace: if($retina, $__sprite-namespace-2x, $__sprite-namespace);
-		$group: map-get($namespace, $prefix);
-		$sprite: map-get($group, $name);
-		@return map-get($sprite, $property);
+		@if (map-has-key($namespace, $prefix)) {
+			$group: map-get($namespace, $prefix);
+			@if (map-has-key($group, $name)) {
+				$sprite: map-get($group, $name);
+				@return map-get($sprite, $property);
+			}
+		}
 	}
 	@return '';
 }

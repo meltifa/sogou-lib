@@ -5,11 +5,15 @@
 	}
 	@if ('string' == $type) {
 		$prefix: str-index($name, '-');
-		$prefix: str-slice($name, 0, $prefix - 1);
+		$prefix: if($prefix, str-slice($name, 0, $prefix - 1), 'default');
 		$namespace: if($retina, $__sprite-namespace-2x, $__sprite-namespace);
-		$group: map-get($namespace, $prefix);
-		$sprite: map-get($group, $name);
-		@return map-get($sprite, $property);
+		@if (map-has-key($namespace, $prefix)) {
+			$group: map-get($namespace, $prefix);
+			@if (map-has-key($group, $name)) {
+				$sprite: map-get($group, $name);
+				@return map-get($sprite, $property);
+			}
+		}
 	}
 	@return '';
 }

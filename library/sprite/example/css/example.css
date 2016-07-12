@@ -1,9 +1,9 @@
-.group1-smile, .close {
+.icon-smile, .close {
   background-image: url("../img/sprite.png");
   background-size: 69px 33px;
   background-repeat: no-repeat; }
 
-.group1-smile {
+.icon-smile {
   width: 28px;
   height: 28px;
   background-position: -41px 0px; }

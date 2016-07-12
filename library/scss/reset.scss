@@ -7,7 +7,7 @@
 	appearance: none;
 }
 
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,button,p,blockquote,th,td,address,figure {
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, button, p, blockquote, th, td, address, figure {
 	margin: 0;
 	padding: 0;
 	outline: 0;
@@ -21,15 +21,15 @@ table {
 	font-size: inherit;
 }
 
-caption,th {
+caption, th {
 	text-align: left;
 }
 
-fieldset,img,iframe {
+fieldset, img, iframe {
 	border: 0;
 }
 
-address,caption,cite,code,dfn,em,strong,th,var,i { 
+address, caption, cite, code, dfn, em, strong, th, var, i { 
 	font: {
 		style: normal;
 		weight: normal;
@@ -40,7 +40,7 @@ li {
 	list-style: none;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1, h2, h3, h4, h5, h6 {
 	font: {
 		size: 100%;
 		weight: normal;
@@ -53,12 +53,12 @@ q {
 	}
 }
 
-abbr,acronym {
+abbr, acronym {
 	border: 0;
 	font-variant: normal;
 }
 
-input,textarea,select,button {
+input, textarea, select, button {
 	border: 0;
 	font: {
 		family: inherit;
@@ -75,20 +75,20 @@ input {
 	}
 }
 
-label,button,a {
+label, button, a {
 	cursor: pointer;
 }
 
-legend,a {
+legend, a {
 	color:inherit;
 }
 
 body {
 	font: {
 		family: sans-serif;
-		size-adjust: none;
+		size-adjust: 100%;
 	}
-	text-size-adjust: none;
+	text-size-adjust: 100%;
 }
 
 a {

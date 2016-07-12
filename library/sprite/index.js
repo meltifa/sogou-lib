@@ -1,78 +1,101 @@
-var FS = require('fs');
+'use strict';
 
-var trimSpaces = function(str) {
-	return str.replace(/\s+/g, ' ').trim();
-};
+const fs = require('fs');
+const prefix = '$__sprite-';
 
-var parseSprites = function(sprites, prefix) {
-
-	var nsLogger = {};
-	var PRENAME = '$__sprite';
-	var RETINA = prefix ? ('-' + prefix) : '';
-		
-	var css = sprites.map(function(sprite) {
-		var iname;
-		var vname = iname = sprite.name;
-		var at = vname.indexOf('@');
-		if(at > 0) {
-			vname = vname.replace('@', '-');
-			iname = iname.substring(0, at);
-		}
-		var exec = /^(\w+)\-/.exec(vname);
-		var namespace = exec ? exec[1] : 'default';
-			
-		if(!nsLogger.hasOwnProperty(namespace)) {
-			nsLogger[namespace] = [];
-				
-		}
-		nsLogger[namespace].push([vname, iname]);
-
-		return (`
-			${PRENAME}-${vname}: (
-				'name': '${iname}',
-				'namespace': '${namespace}',
-				'width': ${sprite.width},
-				'height': ${sprite.height},
-				'escaped_image': '${sprite.escaped_image}',
-				'offset_x': ${sprite.offset_x},
-				'offset_y': ${sprite.offset_y},
-				'total_width': ${sprite.total_width},
-				'total_height': ${sprite.total_height}
-			);
-		`);
+function mapSprite(group) {
+	// $__sprite-delete: ("name": "delete");
+	let suffix = this.retina ? '-2x' : '';
+	let json = this[group].map(function(sprite) {
+		let stringify = JSON.stringify(sprite).replace('{', '(').replace('}', ')');
+		return prefix + sprite.name + suffix + ': ' + stringify + ';';
 	});
+	return json.join('\n');
+}
 
-	var namespace = Object.keys(nsLogger)
-		.map(function(name) {
-			var subs = this[name].map(function(spr) {
-				return `'${spr[1]}': ${PRENAME}-${spr[0]}`;
-			}).join();
-			return `'${name}': (${subs})`;
-		}, nsLogger)
-		.join();
+function mapGroup(group) {
+	// "delete": $__sprite-delete
+	let suffix = this.retina ? '-2x' : '';
+	let json = this[group].map(function(sprite) {
+		return '"' + sprite.name + '"' + ': ' + prefix + sprite.name + suffix;
+	});
+	// $__sprite-default: ("delete": $__sprite-delete);
+	return prefix + group + suffix + ': (' + json.join(', ') + ');';
+}
 
-	css.push(`
-		${PRENAME}-namespace${RETINA}: (${namespace});
-	`);
+function generateNamespace(data) {
+	let groups = Object.keys(data);
+	let suffix = data.retina ? '-2x' : '';
+	let stringify = Object.keys(data).map(function(group) {
+		return '"' + group + '": ' + prefix + group + suffix;
+	}).join(', ');
+	// $__sprite-namespace-2x: ("icon": $__sprite-icon-2x)
+	return prefix + 'namespace' + suffix + ': (' + stringify + ');';
+}
 
-	var sprite = sprites[0];
-	css.push(`
-		${PRENAME}-spritesheet${RETINA}: (
-			'escaped_image': '${sprite.escaped_image}',
-			'total_width': ${sprite.total_width},
-			'total_height': ${sprite.total_height}
-		);
-	`);
-	return css.map(trimSpaces).join('\n');
-};
+function parseSprites(sprites) {
+	const data = sprites.reduce(function(logger, sprite) {
+		let filename = sprite.name;
+		let hyphen = filename.indexOf('-');
+		const retina = filename.indexOf('@');
+		const group = (hyphen > 0) ? filename.substring(0, hyphen) : 'default';
+		const name = (retina > 0) ? filename.substring(0, retina) : filename;
+		if(!logger.hasOwnProperty('retina')) {
+			Object.defineProperty(logger, 'retina', {
+				value: Boolean(retina > 0)
+			});
+		}
+		if(!logger.hasOwnProperty(group)) {
+			Object.defineProperty(logger, group, {
+				value: [],
+				enumerable: true
+			});
+		}
+		logger[group].push({
+			name: name,
+			width: sprite.width,
+			height: sprite.height,
+			escaped_image: sprite.escaped_image,
+			offset_x: sprite.offset_x,
+			offset_y: sprite.offset_y,
+			total_width: sprite.total_width,
+			total_height: sprite.total_height
+		});
+		return logger;
+	}, {});
+
+	let groups = Object.keys(data);
+	const css = [
+		groups.map(mapSprite, data).join('\n'),
+		groups.map(mapGroup, data).join('\n'),
+		generateNamespace(data)
+	];
+	return css.join('\n');
+}
+
+function parseSpritesheet(spritesheet, retina) {
+	let suffix = retina ? '-2x' : '';
+	let info = {
+		width: spritesheet.width,
+		height: spritesheet.height,
+		total_width: spritesheet.width,
+		total_height: spritesheet.height,
+		escaped_image: spritesheet.escaped_image
+	};
+	let stringify = JSON.stringify(info).replace('{', '(').replace('}', ')');
+	// $__sprite-spritesheet: ("total_width": 20)
+	return prefix + 'spritesheet' + suffix + ': ' + stringify + ';';
+}
 
 module.exports = function(data) {
-	var css = parseSprites(data.sprites);
+	const css = [];
+	css.push(parseSprites(data.sprites));
+	css.push(parseSpritesheet(data.spritesheet));
 	if(data.retina_sprites) {
-		css += '\n';
-		css += parseSprites(data.retina_sprites, '2x');
+		css.push(parseSprites(data.retina_sprites));
+		css.push(parseSpritesheet(data.retina_spritesheet, true));
 	}
-	css += '\n\n\n\n';
-	css += FS.readFileSync(__dirname + '/lib/function.scss').toString();
-	return css;
+	css.push('\n\n');
+	css.push(fs.readFileSync(__dirname + '/lib/function.scss').toString());
+	return css.join('\n');
 };
