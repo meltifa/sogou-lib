@@ -1,6 +1,6 @@
 {
-  "name": "library",
-  "version": "0.2.0",
+  "name": "haoycn-library",
+  "version": "0.3.0",
   "description": "store and require tiny modules",
   "main": "index.js",
   "scripts": {
@@ -8,9 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git://github.com/HaoyCn/library"
+    "url": "git://github.com/HaoyCn/library/"
   },
   "keywords": ["library"],
-  "author": "HaoyCn",
-  "license": "MIT"
+  "author": {
+    "name": "HaoyCn",
+    "email": "xuhaoyang@live.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HaoyCn/library/issues"
+  }
 }
