@@ -104,6 +104,10 @@
 		line-clamp: $line;
 		box-orient: vertical;
 	}
+	@if (1 == $line) {
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 }
 
 @mixin media-mindpr($dpr) {
