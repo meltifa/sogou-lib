@@ -98,12 +98,16 @@
 	height: $height;	
 }
 
-@mixin line-clip($line) {
+@mixin line-clip($line, $inline: false) {
 	overflow: hidden;
-	display: -webkit-box;
-	-webkit-line-clamp: $line;
-	-webkit-box-orient: vertical;
 	text-overflow: ellipsis;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: $line;
+	@if ($inline) {
+		display: -webkit-inline-box;
+	} @else {
+		display: -webkit-box;
+	}
 }
 
 @mixin media-mindpr($dpr) {
