@@ -104,10 +104,6 @@
 	-webkit-line-clamp: $line;
 	-webkit-box-orient: vertical;
 	text-overflow: ellipsis;
-
-	@if (1 == $line) {
-		white-space: nowrap;
-	}
 }
 
 @mixin media-mindpr($dpr) {
