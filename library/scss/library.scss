@@ -100,12 +100,12 @@
 
 @mixin line-clip($line) {
 	overflow: hidden;
-	-webkit-: {
-		line-clamp: $line;
-		box-orient: vertical;
-	}
+	display: -webkit-box;
+	-webkit-line-clamp: $line;
+	-webkit-box-orient: vertical;
+	text-overflow: ellipsis;
+
 	@if (1 == $line) {
-		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 }
