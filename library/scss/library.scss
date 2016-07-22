@@ -120,3 +120,39 @@
 			@content;
 	}
 }
+
+@function image-group($url, $retina: 2) {
+	$at: str-index($url, '@');
+	$prefix: null;
+	$suffix: null;
+	@if ($at) {
+		$prefix: str-slice($url, 0, $at - 1);
+		$suffix: str-slice($url, $at + 3);
+	} @else {
+		$dot: 0;
+		$string: $url;
+		@while ($string) {
+			$index: str-index($string, '.');
+			@if ($index) {
+				$dot: $dot + $index;
+				$string: str-slice($string, $index + 1);
+			} @else {
+				$string: null;
+			}
+		}
+		$prefix: str-slice($url, 0, $dot - 1);
+		$suffix: str-slice($url, $dot);
+	}
+	$return: 'image-set(';
+	$start: 'url(' + $prefix;
+	@for $i from 1 through $retina {
+		$end: $suffix + ') ' + $i + 'x, ';
+		@if (1 != $i) {
+			$end: '@' + $i + 'x' + $end;
+		}
+		$return: $return + $start + $end;
+	}
+	$return: str-slice($return, 0, str-length($return) - 2);
+	$return: $return + ')';
+	@return #{$return};
+}

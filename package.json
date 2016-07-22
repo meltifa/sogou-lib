@@ -1,6 +1,6 @@
 {
   "name": "haoycn-library",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "store and require tiny modules",
   "main": "index.js",
   "scripts": {
