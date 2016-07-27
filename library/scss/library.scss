@@ -101,12 +101,23 @@
 @mixin line-clip($line, $inline: false) {
 	overflow: hidden;
 	text-overflow: ellipsis;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: $line;
-	@if ($inline) {
-		display: -webkit-inline-box;
+	@if (1 == $line) {
+	// 还需要定义非 auto 的 width
+		white-space: nowrap;
+		@if ($inline) {
+		// 行内格式化上下文可能需要用 vertical-align 来调整
+			display: inline-block;
+		} @else {
+			display: block;
+		}
 	} @else {
-		display: -webkit-box;
+		-webkit-line-clamp: $line;
+		-webkit-box-orient: vertical;
+		@if ($inline) {
+			display: -webkit-inline-box;
+		} @else {
+			display: -webkit-box;
+		}
 	}
 }
 
