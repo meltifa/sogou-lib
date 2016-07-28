@@ -7,7 +7,7 @@ var spritesmith = require('gulp.spritesmith');
 var cssTemplate = require('../index');
 
 gulp.task('sprite', function() {
-	gulp.src(['img/*.png', '!img/spri*.png'])
+	return gulp.src(['img/*.png', '!img/spri*.png'])
 		.pipe(spritesmith({
 			padding: 8,
 			retinaImgName: 'img/sprite@2x.png',
