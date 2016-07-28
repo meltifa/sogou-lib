@@ -1,7 +1,12 @@
-.icon-smile, .close {
+.close, .icon-smile {
   background-image: url("../img/sprite.png");
   background-size: 69px 33px;
   background-repeat: no-repeat; }
+
+.close {
+  width: 33px;
+  height: 33px;
+  background-position: 0px 0px; }
 
 .icon-smile {
   width: 28px;

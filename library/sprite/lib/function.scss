@@ -3,27 +3,26 @@
 	@if ('map' == $type) {
 		@return map-get($name, $property);
 	}
-	@if ('string' == $type) {
-		$prefix: str-index($name, '-');
-		$prefix: if($prefix, str-slice($name, 0, $prefix - 1), 'default');
-		$namespace: if($retina, $__sprite-namespace-2x, $__sprite-namespace);
-		@if (map-has-key($namespace, $prefix)) {
-			$group: map-get($namespace, $prefix);
-			@if (map-has-key($group, $name)) {
-				$sprite: map-get($group, $name);
-				@return map-get($sprite, $property);
-			}
-		}
+	$slash: str-index($name, '/');
+	@if ($slash) {
+		$group: str-slice($name, 0, $slash - 1);
+		$name: str-slice($name, $slash + 1);
+	} @else {
+		$group: str-index($name, '-');
+		$group: if($group, str-slice($name, 0, $group - 1), 'default');
 	}
-	@return '';
+	$set: if($retina, $__sprite-group-2x__, $__sprite-group__);
+	$group: map-get($set, $group);
+	$name: map-get($group, $name);
+	@return map-get($name, $property);
 }
 
 @function sprite-info($prop, $retina: false) {
-	$spritesheet: if($retina, $__sprite-spritesheet-2x, $__sprite-spritesheet);
-	@return map-get($spritesheet, $prop);
+	$sheet: if($retina, $__sprite-sheet-2x__, $__sprite-sheet__);
+	@return map-get($sheet, $prop);
 }
 
-@function sprite-group($name, $retina: false) {
-	$namespace: if($retina, $__sprite-namespace-2x, $__sprite-namespace);
-	@return map-get($namespace, $name);
+@function sprite-group($group, $retina: false) {
+	$set: if($retina, $__sprite-group-2x__, $__sprite-group__);
+	@return map-get($set, $group);
 }

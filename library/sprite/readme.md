@@ -1,70 +1,64 @@
-为避免变量命名冲突，自动生成的变量均以 `$__sprite` 开头，在使用中，推荐将这些自动生成的变量当做不存在一样，不直接使用 `$__sprite-icon-coin` 这样的语法，而是使用公开的函数来取值。
+## Gulp 中配置 ##
+
+本库是 gulp.spritesmith 的 参数 `cssTemplate` 的配置工具。使用方法如下：
+
+	var Library = require('haoycn-library');
+	var sprite = require('gulp.spritesmith');
+	var cssTemplate = new Library('sprite').use();
+
+	gulp.task('sprite', function() {
+		return gulp.src('./src/asset/sprite/*.png')
+			.pipe(sprite({
+				imgName: 'img/sprite.png',
+				cssName: 'css/sprite.scss',
+				retinaSrcFilter: './src/asset/sprite/*@2x.png',
+				retinaImgName: 'img/sprite@2x.png',
+				padding: 8,
+				// 图片默认以名字中短横线 `-` 前的字符为分组名，如果没有短横线，则分组名为 `default`
+				cssTemplate: cssTemplate
+				// 支持以图片所在文件夹为分组名，需如下配置：
+				// cssTemplate: cssTemplate({byDir: true})
+			}))
+			.pipe(gulp.dest('./src'));
+	});
+
+## SCSS 中使用雪碧图 ##
+
+工具将自动生成一些变量。在使用中，请忽略变量的存在，不要直接使用，而是通过以下公开的函数来取值。
+
+更具体的使用示例请参见 example 目录。
 
 ###sprite-prop($name, $prop, $retina: false)###
 
+获取某个元素的信息。
+
  - $name: 图片名称
  - $prop: 属性名称，包括：
-	 - `name`: 原图片名
-	 - `namespace`: 所属命名空间
+	 - `name`: 原图片名（无 `@2x` 和后缀）
 	 - `width`: 宽（无单位）
 	 - `height`: 高（无单位）
 	 - `offset_x`: 在雪碧图中的水平偏移（无单位）
 	 - `offset_y`: 在雪碧图中的垂直偏移（无单位）
-	 - `escaped_image`: 雪碧图地址
-	 - `total_width`: 雪碧图总宽度
-	 - `total_height`: 雪碧图总高度
- - $retina: 是否为查询高清雪碧图，当值不为布尔假的时候返回的雪碧图元素是高清元素
-
-用法如：
-
-	.icon-coin {
-		// 使用图片名
-		width: sprite-prop('icon-coin', 'width');
-		// 或使用变量（不推荐这样写，但在遍历命名空间的时候可以这么用）
-		height: sprite-prop($__sprite-icon-coin, 'height');
-	}
+	 - `url` 或 `escaped_image`: 雪碧图地址
+	 - `total_width`: 雪碧图总宽度（无单位）
+	 - `total_height`: 雪碧图总高度（无单位）
+ - $retina: 是否查询高清雪碧图
 
 
+###sprite-group($group, $retina: false)###
 
-###sprite-group($name, $retina: false)###
+获取一个分组。
 
- - $name: 命名空间名称
- - $retina: 是否为查询高清雪碧图
+ - $group: 分组名称
+ - $retina: 是否查询高清雪碧图
 
-在遍历中，如果临时参数只有一个，那么该参数是一个 SassList，如下用法：
-
-	@each $list in sprite-group('icon') {
-		$name: nth($list, 1);
-		$sprite: nth($list, 2);
-		// 或（注：此时用临时变量作为参数是推荐的）
-		// $name: sprite-prop($sprite, 'name');
-	}
-
-以上用法是不推荐的，建议使用如下用法更便捷：
-
-	@each $name, $sprite in sprite-group('icon') {
-		$width: sprite-prop($sprite, 'width');
-		$height: sprite-prop($sprite, 'height');
-		$offset-x: sprite-prop($sprite, 'offset_x');
-		$offset-y: sprite-prop($sprite, 'offset_y');
-
-		// 创建一个选择器
-		.#{$name} {
-			// 继承某些公共属性
-			@extend %-sprite-icon;
-			// 设置某些私有属性
-			width: #{$width}PX;
-			height: #{$height}PX;
-			background-position: #{$offset-x}PX #{$offset-y}PX;
-		}
-	}
 
 ###sprite-info($prop, $retina: false)###
 
-查询雪碧图信息
+查询雪碧图信息。
 
  - $prop: 信息字段，可用的值有：
-	 - `escaped_image`: 雪碧图地址
-	 - `total_width`: 雪碧图总宽度
-	 - `total_height`: 雪碧图总高度
+	 - `url` 或 `escaped_image`: 雪碧图地址
+	 - `width` 或 `total_width` : 雪碧图总宽度（无单位）
+	 - `height` 或 `total_height`: 雪碧图总高度（无单位）
  - $retina: 是否为查询高清雪碧图

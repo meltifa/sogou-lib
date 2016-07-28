@@ -1,15 +1,75 @@
-$__sprite-close: ("name":"close","width":33,"height":33,"escaped_image":"../img/sprite.png","offset_x":0,"offset_y":0,"total_width":69,"total_height":33);
-$__sprite-icon-smile: ("name":"icon-smile","width":28,"height":28,"escaped_image":"../img/sprite.png","offset_x":-41,"offset_y":0,"total_width":69,"total_height":33);
-$__sprite-default: ("close": $__sprite-close);
-$__sprite-icon: ("icon-smile": $__sprite-icon-smile);
-$__sprite-namespace: ("default": $__sprite-default, "icon": $__sprite-icon);
-$__sprite-spritesheet: ("width":69,"height":33,"total_width":69,"total_height":33,"escaped_image":"../img/sprite.png");
-$__sprite-close-2x: ("name":"close","width":66,"height":66,"escaped_image":"../img/sprite@2x.png","offset_x":0,"offset_y":0,"total_width":138,"total_height":66);
-$__sprite-icon-smile-2x: ("name":"icon-smile","width":56,"height":56,"escaped_image":"../img/sprite@2x.png","offset_x":-82,"offset_y":0,"total_width":138,"total_height":66);
-$__sprite-default-2x: ("close": $__sprite-close-2x);
-$__sprite-icon-2x: ("icon-smile": $__sprite-icon-smile-2x);
-$__sprite-namespace-2x: ("default": $__sprite-default-2x, "icon": $__sprite-icon-2x);
-$__sprite-spritesheet-2x: ("width":138,"height":66,"total_width":138,"total_height":66,"escaped_image":"../img/sprite@2x.png");
+$__sprite-sheet__: (
+	"width": 69,
+	"height": 33,
+	"total_width": 69,
+	"total_height": 33,
+	"escaped_image": "../img/sprite.png",
+	"url": "../img/sprite.png"
+);
+$__sprite-group__: (
+	"default": (
+		"close": (
+			"name": "close",
+			"width": 33,
+			"height": 33,
+			"escaped_image": "../img/sprite.png",
+			"offset_x": 0,
+			"offset_y": 0,
+			"total_width": 69,
+			"total_height": 33,
+			"url": "../img/sprite.png"
+		)
+	),
+	"icon": (
+		"icon-smile": (
+			"name": "icon-smile",
+			"width": 28,
+			"height": 28,
+			"escaped_image": "../img/sprite.png",
+			"offset_x": -41,
+			"offset_y": 0,
+			"total_width": 69,
+			"total_height": 33,
+			"url": "../img/sprite.png"
+		)
+	)
+);
+$__sprite-sheet-2x__: (
+	"width": 138,
+	"height": 66,
+	"total_width": 138,
+	"total_height": 66,
+	"escaped_image": "../img/sprite@2x.png",
+	"url": "../img/sprite@2x.png"
+);
+$__sprite-group-2x__: (
+	"default": (
+		"close": (
+			"name": "close",
+			"width": 66,
+			"height": 66,
+			"escaped_image": "../img/sprite@2x.png",
+			"offset_x": 0,
+			"offset_y": 0,
+			"total_width": 138,
+			"total_height": 66,
+			"url": "../img/sprite@2x.png"
+		)
+	),
+	"icon": (
+		"icon-smile": (
+			"name": "icon-smile",
+			"width": 56,
+			"height": 56,
+			"escaped_image": "../img/sprite@2x.png",
+			"offset_x": -82,
+			"offset_y": 0,
+			"total_width": 138,
+			"total_height": 66,
+			"url": "../img/sprite@2x.png"
+		)
+	)
+);
 
 
 
@@ -18,27 +78,26 @@ $__sprite-spritesheet-2x: ("width":138,"height":66,"total_width":138,"total_heig
 	@if ('map' == $type) {
 		@return map-get($name, $property);
 	}
-	@if ('string' == $type) {
-		$prefix: str-index($name, '-');
-		$prefix: if($prefix, str-slice($name, 0, $prefix - 1), 'default');
-		$namespace: if($retina, $__sprite-namespace-2x, $__sprite-namespace);
-		@if (map-has-key($namespace, $prefix)) {
-			$group: map-get($namespace, $prefix);
-			@if (map-has-key($group, $name)) {
-				$sprite: map-get($group, $name);
-				@return map-get($sprite, $property);
-			}
-		}
+	$slash: str-index($name, '/');
+	@if ($slash) {
+		$group: str-slice($name, 0, $slash - 1);
+		$name: str-slice($name, $slash + 1);
+	} @else {
+		$group: str-index($name, '-');
+		$group: if($group, str-slice($name, 0, $group - 1), 'default');
 	}
-	@return '';
+	$set: if($retina, $__sprite-group-2x__, $__sprite-group__);
+	$group: map-get($set, $group);
+	$name: map-get($group, $name);
+	@return map-get($name, $property);
 }
 
 @function sprite-info($prop, $retina: false) {
-	$spritesheet: if($retina, $__sprite-spritesheet-2x, $__sprite-spritesheet);
-	@return map-get($spritesheet, $prop);
+	$sheet: if($retina, $__sprite-sheet-2x__, $__sprite-sheet__);
+	@return map-get($sheet, $prop);
 }
 
-@function sprite-group($name, $retina: false) {
-	$namespace: if($retina, $__sprite-namespace-2x, $__sprite-namespace);
-	@return map-get($namespace, $name);
+@function sprite-group($group, $retina: false) {
+	$set: if($retina, $__sprite-group-2x__, $__sprite-group__);
+	@return map-get($set, $group);
 }

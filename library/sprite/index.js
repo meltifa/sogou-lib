@@ -1,57 +1,28 @@
 'use strict';
 
 const fs = require('fs');
-const prefix = '$__sprite-';
 
-function mapSprite(group) {
-	// $__sprite-delete: ("name": "delete");
-	let suffix = this.retina ? '-2x' : '';
-	let json = this[group].map(function(sprite) {
-		let stringify = JSON.stringify(sprite).replace('{', '(').replace('}', ')');
-		return prefix + sprite.name + suffix + ': ' + stringify + ';';
-	});
-	return json.join('\n');
+function toSCSS(data) {
+	return JSON.stringify(data, null, '\t').replace(/\{/g, '(').replace(/\}/g, ')');
 }
 
-function mapGroup(group) {
-	// "delete": $__sprite-delete
-	let suffix = this.retina ? '-2x' : '';
-	let json = this[group].map(function(sprite) {
-		return '"' + sprite.name + '"' + ': ' + prefix + sprite.name + suffix;
-	});
-	// $__sprite-default: ("delete": $__sprite-delete);
-	return prefix + group + suffix + ': (' + json.join(', ') + ');';
-}
-
-function generateNamespace(data) {
-	let groups = Object.keys(data);
-	let suffix = data.retina ? '-2x' : '';
-	let stringify = Object.keys(data).map(function(group) {
-		return '"' + group + '": ' + prefix + group + suffix;
-	}).join(', ');
-	// $__sprite-namespace-2x: ("icon": $__sprite-icon-2x)
-	return prefix + 'namespace' + suffix + ': (' + stringify + ');';
-}
-
-function parseSprites(sprites) {
+function parseSprites(options, sprites) {
+	const byDir = options.byDir;
 	const data = sprites.reduce(function(logger, sprite) {
-		let filename = sprite.name;
-		let hyphen = filename.indexOf('-');
+		const filename = sprite.name;
+		let group;
+		if(byDir) {
+			group = sprite.source_image.replace(/\\/g, '/').match(/\/([^\/]+)\/[^\/]+$/)[1];
+		} else {
+			const hyphen = filename.indexOf('-');
+			group = (0 < hyphen) ? filename.substring(0, hyphen) : 'default';
+		}
 		const retina = filename.indexOf('@');
-		const group = (hyphen > 0) ? filename.substring(0, hyphen) : 'default';
-		const name = (retina > 0) ? filename.substring(0, retina) : filename;
-		if(!logger.hasOwnProperty('retina')) {
-			Object.defineProperty(logger, 'retina', {
-				value: Boolean(retina > 0)
-			});
-		}
+		const name = (0 < retina) ? filename.substring(0, retina) : filename;
 		if(!logger.hasOwnProperty(group)) {
-			Object.defineProperty(logger, group, {
-				value: [],
-				enumerable: true
-			});
+			logger[group] = Object.create(null);
 		}
-		logger[group].push({
+		logger[group][name] = {
 			name: name,
 			width: sprite.width,
 			height: sprite.height,
@@ -59,43 +30,49 @@ function parseSprites(sprites) {
 			offset_x: sprite.offset_x,
 			offset_y: sprite.offset_y,
 			total_width: sprite.total_width,
-			total_height: sprite.total_height
-		});
+			total_height: sprite.total_height,
+			url: sprite.escaped_image
+		};
 		return logger;
 	}, {});
-
-	let groups = Object.keys(data);
-	const css = [
-		groups.map(mapSprite, data).join('\n'),
-		groups.map(mapGroup, data).join('\n'),
-		generateNamespace(data)
-	];
-	return css.join('\n');
+	return toSCSS(data);
 }
 
-function parseSpritesheet(spritesheet, retina) {
-	let suffix = retina ? '-2x' : '';
-	let info = {
-		width: spritesheet.width,
-		height: spritesheet.height,
-		total_width: spritesheet.width,
-		total_height: spritesheet.height,
-		escaped_image: spritesheet.escaped_image
+function parseSpritesheet(sheet) {
+	const data = {
+		width: sheet.width,
+		height: sheet.height,
+		total_width: sheet.width,
+		total_height: sheet.height,
+		escaped_image: sheet.escaped_image,
+		url: sheet.escaped_image
 	};
-	let stringify = JSON.stringify(info).replace('{', '(').replace('}', ')');
-	// $__sprite-spritesheet: ("total_width": 20)
-	return prefix + 'spritesheet' + suffix + ': ' + stringify + ';';
+	return toSCSS(data);
 }
 
-module.exports = function(data) {
+function dataHandler(options, data) {
 	const css = [];
-	css.push(parseSprites(data.sprites));
-	css.push(parseSpritesheet(data.spritesheet));
+	css.push('$__sprite-sheet__: ' + parseSpritesheet(data.spritesheet) + ';');
+	css.push('$__sprite-group__: ' + parseSprites(options, data.sprites) + ';');
 	if(data.retina_sprites) {
-		css.push(parseSprites(data.retina_sprites));
-		css.push(parseSpritesheet(data.retina_spritesheet, true));
+		css.push('$__sprite-sheet-2x__: ' + parseSpritesheet(data.retina_spritesheet) + ';');
+		css.push('$__sprite-group-2x__: ' + parseSprites(options, data.retina_sprites) + ';');
 	}
 	css.push('\n\n');
 	css.push(fs.readFileSync(__dirname + '/lib/function.scss').toString());
 	return css.join('\n');
+}
+
+const defaultOptions = {
+	byDir: false
+};
+
+module.exports = function(arg) {
+	const data = Object(arg);
+	if(data.spritesheet && data.sprites) {
+		return dataHandler(defaultOptions, data);
+	}
+	return dataHandler.bind(null, Object.defineProperties(Object.create(null), {
+		byDir: { value: Boolean(data.byDir) }
+	}));
 };
