@@ -9,7 +9,7 @@ function toSCSS(data) {
 function parseSprites(options, sprites) {
 	const byDir = options.byDir;
 	const data = sprites.reduce(function(logger, sprite) {
-		const filename = sprite.name;
+		const { name: filename, width, height, total_width, total_height, offset_x, offset_y, escaped_image } = sprite;
 		let group;
 		if(byDir) {
 			group = sprite.source_image.replace(/\\/g, '/').match(/\/([^\/]+)\/[^\/]+$/)[1];
@@ -24,14 +24,16 @@ function parseSprites(options, sprites) {
 		}
 		logger[group][name] = {
 			name: name,
-			width: sprite.width,
-			height: sprite.height,
-			escaped_image: sprite.escaped_image,
-			offset_x: sprite.offset_x,
-			offset_y: sprite.offset_y,
-			total_width: sprite.total_width,
-			total_height: sprite.total_height,
-			url: sprite.escaped_image
+			width: width,
+			height: height,
+			escaped_image: escaped_image,
+			offset_x: offset_x,
+			offset_x_pct: offset_x ? (offset_x/(width-total_width)*100).toFixed(4) + '%' : 0,
+			offset_y: offset_y,
+			offset_y_pct: offset_y ? (offset_y/(height-total_height)*100).toFixed(4) + '%' : 0,
+			total_width: total_width,
+			total_height: total_height,
+			url: escaped_image
 		};
 		return logger;
 	}, {});

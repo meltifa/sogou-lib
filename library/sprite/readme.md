@@ -38,10 +38,13 @@
 	 - `width`: 宽（无单位）
 	 - `height`: 高（无单位）
 	 - `offset_x`: 在雪碧图中的水平偏移（无单位）
+	 - `offset_x_pct`: 在雪碧图中的水平偏移（单位：百分比）
 	 - `offset_y`: 在雪碧图中的垂直偏移（无单位）
+	 - `offset_y_pct`: 在雪碧图中的垂直偏移（单位：百分比）
 	 - `url` 或 `escaped_image`: 雪碧图地址
 	 - `total_width`: 雪碧图总宽度（无单位）
 	 - `total_height`: 雪碧图总高度（无单位）
+
  - $retina: 是否查询高清雪碧图
 
 

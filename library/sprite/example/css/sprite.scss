@@ -14,7 +14,9 @@ $__sprite-group__: (
 			"height": 33,
 			"escaped_image": "../img/sprite.png",
 			"offset_x": 0,
+			"offset_x_pct": 0,
 			"offset_y": 0,
+			"offset_y_pct": 0,
 			"total_width": 69,
 			"total_height": 33,
 			"url": "../img/sprite.png"
@@ -27,7 +29,9 @@ $__sprite-group__: (
 			"height": 28,
 			"escaped_image": "../img/sprite.png",
 			"offset_x": -41,
+			"offset_x_pct": "100%",
 			"offset_y": 0,
+			"offset_y_pct": 0,
 			"total_width": 69,
 			"total_height": 33,
 			"url": "../img/sprite.png"
@@ -50,7 +54,9 @@ $__sprite-group-2x__: (
 			"height": 66,
 			"escaped_image": "../img/sprite@2x.png",
 			"offset_x": 0,
+			"offset_x_pct": 0,
 			"offset_y": 0,
+			"offset_y_pct": 0,
 			"total_width": 138,
 			"total_height": 66,
 			"url": "../img/sprite@2x.png"
@@ -63,7 +69,9 @@ $__sprite-group-2x__: (
 			"height": 56,
 			"escaped_image": "../img/sprite@2x.png",
 			"offset_x": -82,
+			"offset_x_pct": "100%",
 			"offset_y": 0,
+			"offset_y_pct": 0,
 			"total_width": 138,
 			"total_height": 66,
 			"url": "../img/sprite@2x.png"
