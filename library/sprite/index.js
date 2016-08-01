@@ -9,7 +9,15 @@ function toSCSS(data) {
 function parseSprites(options, sprites) {
 	const byDir = options.byDir;
 	const data = sprites.reduce(function(logger, sprite) {
-		const { name: filename, width, height, total_width, total_height, offset_x, offset_y, escaped_image } = sprite;
+		const filename = sprite.name;
+		const width = sprite.width;
+		const height = sprite.height;
+		const total_width = sprite.total_width;
+		const total_height = sprite.total_height;
+		const offset_x = sprite.offset_x;
+		const offset_y = sprite.offset_y;
+		const escaped_image = sprite.escaped_image;
+
 		let group;
 		if(byDir) {
 			group = sprite.source_image.replace(/\\/g, '/').match(/\/([^\/]+)\/[^\/]+$/)[1];
