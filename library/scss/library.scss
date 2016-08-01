@@ -1,27 +1,26 @@
 %-text-justify {
-	// 作用于文本的父容器（即至少有一个父标签一个子标签）
-	// 此为不支持 `text-align-last` 时的兼容方案
-	// 伪元素会增加底部空白，故需将此父容器 `line-height` 设为 0
-	// 再还原各子元素的 `line-height`
-	line-height: 0;
+	$selector: selector_unify(&, ':after');
 	text-align: justify;
-	&:after {
-		content: '';
-		display: inline-block;
-		width: 100%;
-		// 使之不产生空白
-		// height: 0;
-		// overflow: hidden;
-		vertical-align: top;
+	text-justify: distribute-all-lines;
+	text-align-last: justify;
+	-moz-text-align-last: justify;
+	-webkit-text-align-last: justify;
+
+	@at-root {
+		@media screen and (-webkit-min-device-pixel-ratio:0) {
+			#{$selector} {
+				content: '\3000';
+				overflow: hidden;
+				display: inline-block;
+				width: 100%;
+				height: 0;
+			}
+		}
 	}
 }
 
-@mixin text-justify($line-height) {
+@mixin text-justify {
 	@extend %-text-justify;
-	// 还原各子元素 line-height
-	& > * {
-		line-height: $line-height;
-	}
 }
 
 %-flex-justify {
