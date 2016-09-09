@@ -82,19 +82,40 @@
 	transform: translate3d(-50%, -50%, 0);
 }
 
-@mixin absolute-center($width, $height) {
-	$margin-top: - $height / 2;
-	$margin-left: - $width / 2;
-	@extend %-absolute-center;
-	width: $width;
-	height: $height;
-	margin: $margin-top 0 0 $margin-left;
+%-margin-center {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
 }
 
-@mixin transform-center($width, $height) {
+@mixin margin-center($width: null, $height: null) {
+	@extend %-margin-center;
+	@if (null != $width) {
+		width: $width;
+		height: $height;
+	}
+}
+
+@mixin absolute-center($width: null, $height: null) {
+	@extend %-absolute-center;
+	@if (null != $width) {
+		$margin-top: - $height / 2;
+		$margin-left: - $width / 2;
+		width: $width;
+		height: $height;
+		margin: $margin-top 0 0 $margin-left;
+	}
+}
+
+@mixin transform-center($width: null, $height: null) {
 	@extend %-transform-center;
-	width: $width;
-	height: $height;	
+	@if (null != $width) {
+		width: $width;
+		height: $height;
+	}
 }
 
 @mixin line-clip($line, $inline: false) {
