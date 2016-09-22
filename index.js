@@ -39,7 +39,7 @@ var Library = function(path) {
 Library.prototype = {
 	constructor: Library,
 	use: function(name) {
-		var mod = this.get(name || 'index').shift();
+		var mod = this.get(name || 'index.js').shift();
 		var exp;
 		if(mod) {
 			try{

@@ -30,17 +30,23 @@ function parseSprites(options, sprites) {
 		if(!logger.hasOwnProperty(group)) {
 			logger[group] = Object.create(null);
 		}
+		const offset_x_pct = offset_x ? (offset_x/(width-total_width)*100).toFixed(4) + '%' : 0;
+		const offset_y_pct = offset_y ? (offset_y/(height-total_height)*100).toFixed(4) + '%' : 0;
 		logger[group][name] = {
 			name: name,
 			width: width,
 			height: height,
-			escaped_image: escaped_image,
 			offset_x: offset_x,
-			offset_x_pct: offset_x ? (offset_x/(width-total_width)*100).toFixed(4) + '%' : 0,
 			offset_y: offset_y,
-			offset_y_pct: offset_y ? (offset_y/(height-total_height)*100).toFixed(4) + '%' : 0,
 			total_width: total_width,
 			total_height: total_height,
+			escaped_image: escaped_image,
+			offset_x_pct: offset_x_pct,
+			offset_y_pct: offset_y_pct,
+			x: offset_x,
+			y: offset_y,
+			x_pct: offset_x_pct,
+			y_pct: offset_y_pct,
 			url: escaped_image
 		};
 		return logger;
@@ -48,25 +54,12 @@ function parseSprites(options, sprites) {
 	return toSCSS(data);
 }
 
-function parseSpritesheet(sheet) {
-	const data = {
-		width: sheet.width,
-		height: sheet.height,
-		total_width: sheet.width,
-		total_height: sheet.height,
-		escaped_image: sheet.escaped_image,
-		url: sheet.escaped_image
-	};
-	return toSCSS(data);
-}
 
 function dataHandler(options, data) {
 	const css = [];
-	css.push('$__sprite-sheet__: ' + parseSpritesheet(data.spritesheet) + ';');
-	css.push('$__sprite-group__: ' + parseSprites(options, data.sprites) + ';');
+	css.push('$__sprite-group__: map-merge(if(global_variable_exists("__sprite-group__"), $__sprite-group__, ()), ' + parseSprites(options, data.sprites) + ');');
 	if(data.retina_sprites) {
-		css.push('$__sprite-sheet-2x__: ' + parseSpritesheet(data.retina_spritesheet) + ';');
-		css.push('$__sprite-group-2x__: ' + parseSprites(options, data.retina_sprites) + ';');
+		css.push('$__sprite-group-2x__: map-merge(if(global_variable_exists("__sprite-group-2x__"), $__sprite-group-2x__, ()), ' + parseSprites(options, data.retina_sprites) + ');');
 	}
 	css.push('\n\n');
 	css.push(fs.readFileSync(__dirname + '/lib/function.scss').toString());

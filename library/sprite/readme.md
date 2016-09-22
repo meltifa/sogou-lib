@@ -37,10 +37,10 @@
 	 - `name`: 原图片名（无 `@2x` 和后缀）
 	 - `width`: 宽（无单位）
 	 - `height`: 高（无单位）
-	 - `offset_x`: 在雪碧图中的水平偏移（无单位）
-	 - `offset_x_pct`: 在雪碧图中的水平偏移（单位：百分比）
-	 - `offset_y`: 在雪碧图中的垂直偏移（无单位）
-	 - `offset_y_pct`: 在雪碧图中的垂直偏移（单位：百分比）
+	 - `offset_x` 或 `x`: 在雪碧图中的水平偏移（无单位）
+	 - `offset_x_pct` 或 `x_pct`: 在雪碧图中的水平偏移（单位：百分比）
+	 - `offset_y` 或 `y`: 在雪碧图中的垂直偏移（无单位）
+	 - `offset_y_pct` 或 `y_pct`: 在雪碧图中的垂直偏移（单位：百分比）
 	 - `url` 或 `escaped_image`: 雪碧图地址
 	 - `total_width`: 雪碧图总宽度（无单位）
 	 - `total_height`: 雪碧图总高度（无单位）
@@ -48,7 +48,7 @@
  - $retina: 是否查询高清雪碧图
 
 
-###sprite-group($group, $retina: false)###
+###sprite-group($group: 'default', $retina: false)###
 
 获取一个分组。
 
@@ -56,10 +56,11 @@
  - $retina: 是否查询高清雪碧图
 
 
-###sprite-info($prop, $retina: false)###
+###sprite-info($dir, $prop: null, $retina: false)###
 
 查询雪碧图信息。
 
+ - $dir: 如果项目里使用了多张雪碧图，此参数必需, 否则可以省略
  - $prop: 信息字段，可用的值有：
 	 - `url` 或 `escaped_image`: 雪碧图地址
 	 - `width` 或 `total_width` : 雪碧图总宽度（无单位）
